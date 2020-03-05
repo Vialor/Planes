@@ -58,7 +58,13 @@ class Enemy(GameSprite):
             self.kill()
 
     def destroy(self):
-        super().update()
+        images = ["enemy1_down1.png", "enemy1_down2.png", "enemy1_down3.png", "enemy1_down4.png"]
+        for i in images:
+            self.image = load_img(i)[0]
+            screen = pygame.display.set_mode(SCREEN_RECT.size)
+            screen.blit(self.image, self.rect)
+            pygame.display.update()
+            pygame.time.delay(150)
 
 
 # class Enemy2(GameSprite):
@@ -74,6 +80,7 @@ class Hero(GameSprite):
         self.rect.bottom = SCREEN_RECT.bottom - 60
         self.bullets = pygame.sprite.Group()
         self.time = 0
+        self.life = 1
 
     def update(self):
         images = ["me1.png", "me2.png"]
@@ -105,10 +112,10 @@ class Hero(GameSprite):
                   "me_destroy_3.png", "me_destroy_4.png"]
         for i in images:
             self.image = load_img(i)[0]
-            screen = pygame.display.set_mode(SCREEN_RECT.size)
-            screen.blit(self.image, self.rect)
+            # screen = pygame.display.set_mode(SCREEN_RECT.size)
+            # screen.blit(self.image, self.rect)
             pygame.display.update()
-            pygame.time.delay(150)
+            pygame.time.delay(50)
 
 
 class Bullet(GameSprite):

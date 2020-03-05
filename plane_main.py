@@ -6,10 +6,12 @@ from plane_sprites import *
 class PlaneGame(object):
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
+        load_music("Paper Plane's Adventure.mp3");
         self.screen = pygame.display.set_mode(SCREEN_RECT.size)
         self.clock = pygame.time.Clock()
         self.__create_sprites()
-        pygame.display.set_caption("The Adventure of a Plane")
+        pygame.display.set_caption("Paper Plane's Adventure")
         pygame.time.set_timer(CREATE_ENEMY_EVENT, 1000)
         pygame.time.set_timer(HERO_FIRE_EVENT, 500)
 
@@ -24,10 +26,9 @@ class PlaneGame(object):
         self.hero_group = pygame.sprite.Group(self.hero)
 
     @staticmethod
-    def __play_music(self):
-        self.music = BGM();
+    def __play_music():
         if not pygame.mixer.music.get_busy():
-                pygame.mixer.music.play()
+                    pygame.mixer.music.play()
 
     @staticmethod
     def __game_over():
@@ -56,10 +57,12 @@ class PlaneGame(object):
 
     def __check_collide(self):
         # bullets hit enemies
-        pygame.sprite.groupcollide(self.hero.bullets, self.enemy_group, True, True)
+        hit_enemy = pygame.sprite.groupcollide(self.hero.bullets, self.enemy_group, True, True)
+        if hit_enemy:
+            pass
         # hero crashes into enemies
-        enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, True)
-        if enemies:
+        hit_hero = pygame.sprite.spritecollide(self.hero, self.enemy_group, True)
+        if hit_hero:
             self.hero.destroy()
             self.hero.kill()
             self.__game_over()
@@ -78,10 +81,9 @@ class PlaneGame(object):
         self.hero.bullets.draw(self.screen)
 
     def start_game(self):
-        print('start game')
         while True:
             self.clock.tick(FRAME_PER_SEC)
-            # self.__play_music()
+            self.__play_music()
             self.__event_handler()
             self.__check_collide()
             self.__update_sprites()

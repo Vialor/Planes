@@ -28,27 +28,23 @@ def load_img(name):
 
 
 def load_music(name):
-    class NoneSound:
+    class NoneMusic:
         def play(self):
             pass
-
     if not pygame.mixer or not pygame.mixer.get_init():
-        return NoneSound()
+        return NoneMusic()
     fullname = os.path.join(msc_dir, name)
     try:
-        print(fullname)
-        sound = pygame.mixer.Sound(fullname)
+        pygame.mixer.music.load(fullname)
     except pygame.error:
         print("Cannot load sound: %s" % fullname)
         raise SystemExit(str(geterror()))
-    return sound
 
 # TODO pause music
 
 
 class BGM():
     # music
-    # pygame.mixer.init()
     # pygame.mixer.music.load("./music/Paper Plane's Adventure.mp3")
     pass
 
