@@ -22,7 +22,7 @@ CREATE_ENEMY3_EVENT = pygame.USEREVENT + 3
 SUPPLY_EVENT = pygame.USEREVENT + 4
 
 # detail data
-hero_animation_count = 0
+HERO_LIFE = 3
 
 class GameSprite(pygame.sprite.Sprite):
     def __init__(self, image_name, speed=1):
@@ -82,7 +82,7 @@ class Hero(GameSprite):
         self.rect.bottom = SCREEN_RECT.bottom - 60
         self.bullets = pygame.sprite.Group()
         self.time = 0
-        self.life = 3
+        self.life = HERO_LIFE
 
     def update(self):
         # puffing air
@@ -116,7 +116,7 @@ class Hero(GameSprite):
             self.image = load_img(i)[0]
             screen = pygame.display.set_mode(SCREEN_RECT.size)
             screen.blit(self.image, self.rect)
-            pygame.display.update()
+            pygame.display.update(self)
             pygame.time.delay(50)
 
 
@@ -141,4 +141,8 @@ class EnemyBullet(GameSprite):
 
 
 class Supply():
+    pass
+
+
+class LifeIcon():
     pass
