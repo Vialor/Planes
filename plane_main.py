@@ -6,11 +6,21 @@ from plane_sprites import *
 class PlaneGame(object):
     def __init__(self):
         pygame.init()
+
+        # music
         pygame.mixer.init()
-        load_music("Paper Plane's Adventure.mp3");
+        load_music("Paper Plane's Adventure.mp3")
+
+        # font
+        self.font = pygame.font.SysFont('comicsans', 30, True)  # handle exception?
+        self.score = 0
+
+        # objects
         self.screen = pygame.display.set_mode(SCREEN_RECT.size)
-        self.clock = pygame.time.Clock()
         self.__create_sprites()
+
+        # time
+        self.clock = pygame.time.Clock()
         pygame.display.set_caption("Paper Plane's Adventure")
         pygame.time.set_timer(CREATE_ENEMY_EVENT, 1000)
         pygame.time.set_timer(HERO_FIRE_EVENT, 500)
@@ -59,7 +69,7 @@ class PlaneGame(object):
         # bullets hit enemies
         hit_enemy = pygame.sprite.groupcollide(self.hero.bullets, self.enemy_group, True, True)
         if hit_enemy:
-            pass
+            self.score += 1;
         # hero crashes into enemies
         hit_hero = pygame.sprite.spritecollide(self.hero, self.enemy_group, True)
         if hit_hero:
@@ -79,6 +89,9 @@ class PlaneGame(object):
 
         self.hero.bullets.update()
         self.hero.bullets.draw(self.screen)
+
+        text = self.font.render("score: " + str(self.score), 1, (0, 0, 0))
+        self.screen.blit(text, (10, 10))
 
     def start_game(self):
         while True:

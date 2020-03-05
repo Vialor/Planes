@@ -42,12 +42,5 @@ def load_music(name):
 
 # TODO pause music
 
-
-class BGM():
-    # music
-    # pygame.mixer.music.load("./music/Paper Plane's Adventure.mp3")
-    pass
-
-
 class sound():
     pass

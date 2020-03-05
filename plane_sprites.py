@@ -12,15 +12,17 @@ except ImportError as e:
     print("couldn't load module. %s" % e)
     sys.exit(2)
 
+# general settings
 SCREEN_RECT = pygame.Rect(0, 0, 400, 700)
 FRAME_PER_SEC = 60
-ANIMATION_CYCLE = 20
 CREATE_ENEMY_EVENT = pygame.USEREVENT
 HERO_FIRE_EVENT = pygame.USEREVENT + 1
 CREATE_ENEMY2_EVENT = pygame.USEREVENT + 2
 CREATE_ENEMY3_EVENT = pygame.USEREVENT + 3
 SUPPLY_EVENT = pygame.USEREVENT + 4
 
+# detail data
+hero_animation_count = 0
 
 class GameSprite(pygame.sprite.Sprite):
     def __init__(self, image_name, speed=1):
@@ -80,17 +82,17 @@ class Hero(GameSprite):
         self.rect.bottom = SCREEN_RECT.bottom - 60
         self.bullets = pygame.sprite.Group()
         self.time = 0
-        self.life = 1
+        self.life = 3
 
     def update(self):
+        # puffing air
         images = ["me1.png", "me2.png"]
+        if self.time + 1 >= 10:
+            self.time = 0
+        self.image = load_img(images[self.time//5])[0]
         self.time += 1
-        if self.time % ANIMATION_CYCLE == 0:
-            if self.time % (2*ANIMATION_CYCLE) == 0:
-                self.image = load_img(images[0])[0]
-            else:
-                self.image = load_img(images[1])[0]
 
+        # user horizontal control
         self.rect.x += self.speed
 
         # stay in the screen
@@ -112,8 +114,8 @@ class Hero(GameSprite):
                   "me_destroy_3.png", "me_destroy_4.png"]
         for i in images:
             self.image = load_img(i)[0]
-            # screen = pygame.display.set_mode(SCREEN_RECT.size)
-            # screen.blit(self.image, self.rect)
+            screen = pygame.display.set_mode(SCREEN_RECT.size)
+            screen.blit(self.image, self.rect)
             pygame.display.update()
             pygame.time.delay(50)
 
@@ -136,3 +138,7 @@ class EnemyBullet(GameSprite):
         super().update()
         if self.rect.top > SCREEN_RECT.height:
             self.kill()
+
+
+class Supply():
+    pass
