@@ -21,8 +21,10 @@ CREATE_ENEMY2_EVENT = pygame.USEREVENT + 2
 CREATE_ENEMY3_EVENT = pygame.USEREVENT + 3
 SUPPLY_EVENT = pygame.USEREVENT + 4
 
-# detail data
+# object property
 HERO_LIFE = 3
+ENEMY2_LIFE = 5
+ENEMY3_LIFE = 20
 
 class GameSprite(pygame.sprite.Sprite):
     def __init__(self, image_name, speed=1):
@@ -54,24 +56,49 @@ class Enemy(GameSprite):
         max_x = SCREEN_RECT.width - self.rect.width
         self.rect.x = random.randint(0, max_x)
 
+        self.dyingTime = 0
+        self.isAlive = True
+
+    def update(self):
+        if self.isAlive:
+            super().update()
+            if self.rect.y > SCREEN_RECT.height:
+                self.kill()
+        else:
+            self.dying_animation()
+
+    def dying_animation(self):
+        images = ["enemy1_down1.png", "enemy1_down2.png", "enemy1_down3.png", "enemy1_down4.png"]
+        if self.dyingTime + 1 == 20:
+            self.kill()
+        self.image = load_img(images[self.dyingTime // 5])[0]
+        self.dyingTime += 1
+
+
+
+class Enemy2(GameSprite):  # not working
+    def __init__(self):
+        speed = 2
+        super().__init__("enemy2.png", speed)
+        self.life = ENEMY2_LIFE
+        self.rect.bottom = 0
+        max_x = SCREEN_RECT.width - self.rect.width
+        self.rect.x = random.randint(0, max_x)
+        self.bullets = pygame.sprite.Group()
+
     def update(self):
         super().update()
         if self.rect.y > SCREEN_RECT.height:
             self.kill()
 
-    def destroy(self):
-        images = ["enemy1_down1.png", "enemy1_down2.png", "enemy1_down3.png", "enemy1_down4.png"]
-        for i in images:
-            self.image = load_img(i)[0]
-            screen = pygame.display.set_mode(SCREEN_RECT.size)
-            screen.blit(self.image, self.rect)
-            pygame.display.update()
-            pygame.time.delay(150)
+    def fire(self):
+        for i in (0, 1):
+            bullet = EnemyBullet()
+            bullet.rect.top = self.rect.y + i * 20
+            bullet.rect.centerx = self.rect.centerx
 
+            self.bullets.add(bullet)
 
-# class Enemy2(GameSprite):
-#
-#
 # class Enemy3(GameSprite):
 
 
@@ -84,22 +111,28 @@ class Hero(GameSprite):
         self.time = 0
         self.life = HERO_LIFE
 
+        self.dyingTime = 0
+        self.isAlive = True
+
     def update(self):
-        # puffing air
-        images = ["me1.png", "me2.png"]
-        if self.time + 1 >= 10:
-            self.time = 0
-        self.image = load_img(images[self.time//5])[0]
-        self.time += 1
+        if self.isAlive:
+            # puffing air
+            images = ["me1.png", "me2.png"]
+            if self.time + 1 == 10:
+                self.time = 0
+            self.image = load_img(images[self.time//5])[0]
+            self.time += 1
 
-        # user horizontal control
-        self.rect.x += self.speed
+            # user horizontal control
+            self.rect.x += self.speed
 
-        # stay in the screen
-        if self.rect.x < 0:
-            self.rect.x = 0
-        elif self.rect.right > SCREEN_RECT.right:
-            self.rect.right = SCREEN_RECT.right
+            # stay in the screen
+            if self.rect.x < 0:
+                self.rect.x = 0
+            elif self.rect.right > SCREEN_RECT.right:
+                self.rect.right = SCREEN_RECT.right
+        else:
+            self.dying_animation()
 
     def fire(self):
         for i in (0, 1):
@@ -109,15 +142,14 @@ class Hero(GameSprite):
 
             self.bullets.add(bullet)
 
-    def destroy(self):
-        images = ["me_destroy_1.png", "me_destroy_2.png",
-                  "me_destroy_3.png", "me_destroy_4.png"]
-        for i in images:
-            self.image = load_img(i)[0]
-            screen = pygame.display.set_mode(SCREEN_RECT.size)
-            screen.blit(self.image, self.rect)
-            pygame.display.update(self)
-            pygame.time.delay(50)
+    def dying_animation(self):
+        images = ["me_destroy_1.png", "me_destroy_2.png", "me_destroy_3.png", "me_destroy_4.png"]
+        if self.dyingTime + 1 == 20:
+            self.kill()
+            pygame.quit()  # there should be a better way to do this
+            exit()
+        self.image = load_img(images[self.dyingTime // 5])[0]
+        self.dyingTime += 1
 
 
 class Bullet(GameSprite):
@@ -140,9 +172,6 @@ class EnemyBullet(GameSprite):
             self.kill()
 
 
-class Supply():
+class Supply(GameSprite):
     pass
 
-
-class LifeIcon():
-    pass

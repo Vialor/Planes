@@ -67,19 +67,18 @@ class PlaneGame(object):
 
     def __check_collide(self):
         # bullets hit enemy
-        hit_enemy = pygame.sprite.groupcollide(self.hero.bullets, self.enemy_group, True, True)
-        if hit_enemy:
+        bullet_hit_enemy = pygame.sprite.groupcollide(self.enemy_group, self.hero.bullets, False, True)
+        for key in bullet_hit_enemy:
             self.score += 1
+            key.isAlive = False
         # TODO bullets hit enemy2
         # TODO bullets hit enemy3
-        # hero crashes into enemies
-        hit_hero = pygame.sprite.spritecollide(self.hero, self.enemy_group, True)
-        if hit_hero:
+        # TODO bullets hit hero
+        hero_hit_enemy = pygame.sprite.spritecollide(self.hero, self.enemy_group, True)
+        if hero_hit_enemy:
             self.hero.life -= 1
         if self.hero.life == 0:
-            self.hero.destroy()
-            self.hero.kill()
-            self.__game_over()
+            self.hero.isAlive = False
 
     def __update_sprites(self):
         # objects
