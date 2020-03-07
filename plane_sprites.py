@@ -75,7 +75,6 @@ class Enemy(GameSprite):
         self.dyingTime += 1
 
 
-
 class Enemy2(GameSprite):  # not working
     def __init__(self):
         speed = 2

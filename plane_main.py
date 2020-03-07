@@ -69,8 +69,9 @@ class PlaneGame(object):
         # bullets hit enemy
         bullet_hit_enemy = pygame.sprite.groupcollide(self.enemy_group, self.hero.bullets, False, True)
         for key in bullet_hit_enemy:
-            self.score += 1
-            key.isAlive = False
+            if key.isAlive:
+                self.score += 1
+                key.isAlive = False
         # TODO bullets hit enemy2
         # TODO bullets hit enemy3
         # TODO bullets hit hero
